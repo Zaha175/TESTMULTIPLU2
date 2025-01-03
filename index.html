@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TEST MULTIPLU</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* ===== CSS ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+
+    /* Parallax-Hintergrund mit dynamischem Farbverlauf */
+    .parallax-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      perspective: 1000px; /* 3D-Effekt */
+    }
+
+    .parallax-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      transform-style: preserve-3d; /* 3D-Effekt */
+    }
+
+    /* Dynamischer Hintergrund mit Farbverlauf */
+    .parallax-layer.background {
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #fbc2eb);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      z-index: -3;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Mittlere Ebene mit Parallax-Effekt */
+    .parallax-layer.middleground {
+      background-image: url('https://cdn.gamma.app/fhpleqvbjim2f32/8b7029ebd925487ba916faf7d1996c98/original/DALL-E-2025-01-03-00.46.57---A-clean-and-minimalist-3D-space-themed-background-for-a-game-interface.-The-scene-features-a-distant-view-of-a-planet-with-subtle-atmospheric-glow-su.webp');
+      z-index: -2;
+    }
+
+    /* Vordere Ebene für Spielinhalte */
+    .parallax-layer.foreground {
+      z-index: 1; /* Über den anderen Layern, aber unter den Buttons */
+      position: relative; /* Notwendig, damit z-index funktioniert */
+    }
+
+    /* Zona de sus - Afișare semnal */
+    .anzeigebereich {
+      flex: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4rem;
+      background-color: transparent;
+    }
+
+    /* Cercuri semnal mit 3D-Effekt */
+    .signal-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: lightgray;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      font-weight: bold;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      color: transparent;
+      border: 3px solid transparent;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d; /* 3D-Effekt */
+    }
+
+    .signal-circle:hover {
+      transform: rotateY(180deg);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Hervorhebung für aktive Signale */
+    .signal-circle.active {
+      border-color: black;
+    }
+
+    /* Stil für S de pe pedala stângă în zona de sus */
+    .signal-circle[data-pedal="left"]::after {
+      content: "S";
+      color: yellow;
+      font-size: 36px;
+      font-weight: bold;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Stil für D de pe pedala dreaptă în zona de sus */
+    .signal-circle[data-pedal="right"]::after {
+      content: "D";
+      color: yellow;
+      font-size: 36px;
+      font-weight: bold;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Symbole für Farben */
+    .signal-circle[data-color="red"]::before {
+      content: "■";
+      color: red;
+      font-size: 50px;
+    }
+
+    .signal-circle[data-color="blue"]::before {
+      content: "●";
+      color: blue;
+      font-size: 50px;
+    }
+
+    .signal-circle[data-color="green"]::before {
+      content: "▲";
+      color: green;
+      font-size: 50px;
+    }
+
+    .signal-circle[data-color="yellow"]::before {
+      content: "◆";
+      color: yellow;
+      font-size: 50px;
+    }
+
+    .signal-circle[data-color="white"]::before {
+      content: "★";
+      color: white;
+      font-size: 50px;
+    }
+
+    /* Zona de notificare */
+    #tonBenachrichtigung {
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: orange;
+      font-size: 18px;
+    }
+
+    /* Zona de sus - Culori */
+    .anzeigebereich {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: transparent;
+      padding: 1rem;
+    }
+
+    .top-button {
+      text-align: center;
+      margin: 0 10px;
+    }
+
+    .color-button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
+
+    .color-button:hover {
+      transform: scale(1.1);
+    }
+
+    .color-button.blue { background-color: blue; color: white; }
+    .color-button.white { background-color: white; border: 2px solid #ddd; }
+    .color-button.yellow { background-color: yellow; }
+
+    /* Butoane de mijloc (Ton înalt și Ton jos) */
+    .middle-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .tone-button {
+      width: 100px;
+      height: 50px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+
+    .tone-button:hover {
+      transform: scale(1.1);
+    }
+
+    .tone-button.tone-high {
+      background-color: lightgray;
+      color: black;
+    }
+
+    .tone-button.tone-low {
+      background-color: black;
+      color: white;
+    }
+
+    /* Zona de jos - Pedale și culori */
+    .interaktionsbereich {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      align-items: center;
+      justify-items: center;
+      background-color: transparent;
+      padding: 1rem;
+    }
+
+    /* Stil pedale */
+    .pedal-button {
+      width: 150px;
+      height: 80px;
+      clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      font-size: 18px;
+      text-align: center;
+      margin: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .pedal-button:hover {
+      transform: scale(1.1);
+    }
+
+    .pedal-left {
+      background: linear-gradient(to bottom, #d3d3d3, #a9a9a9);
+    }
+
+    .pedal-right {
+      background: linear-gradient(to bottom, #6e6e6e, #4e4e4e);
+    }
+
+    /* Stil pentru S de pe pedala stângă în zona de jos */
+    .pedal-button[data-pedal="left"]::after {
+      content: "S";
+      color: yellow;
+      font-size: 36px;
+      font-weight: bold;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Stil pentru D de pe pedala dreaptă în zona de jos */
+    .pedal-button[data-pedal="right"]::after {
+      content: "D";
+      color: yellow;
+      font-size: 36px;
+      font-weight: bold;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Culori laterale */
+    .color-button.red { background-color: red; color: white; }
+    .color-button.green { background-color: green; color: white; }
+    
+    .interaktionsbereich .color-button {
+        width: 80px;
+        height: 80px;
+        margin: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    /* Etichete */
+    .button-container span {
+      display: block;
+      margin-top: 5px;
+      font-size: 14px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Selectare runde */
+    .runden-auswahl {
+      text-align: center;
+      margin: 20px auto;
+      padding: 10px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .runden-auswahl h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .runden-auswahl button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .runden-auswahl button:hover {
+      background-color: #45a049;
+    }
+
+    /* Buton de repornire a jocului */
+    .spiel-neustart {
+      text-align: center;
+      margin-top: 20px;
+       z-index: 10;
+      position: relative;
+    }
+
+    .spiel-neustart button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .spiel-neustart button:hover {
+      background-color: #e68900;
+    }
+  </style>
+</head>
+<body>
+<div class="parallax-container">
+  <div class="parallax-layer background"></div>
+  <div class="parallax-layer middleground"></div>
+  <div class="parallax-layer foreground">
+    <!-- Zona de sus - Afișare semnal -->
+    <div class="anzeigebereich">
+      <div id="signal1" class="signal-circle"></div>
+      <div id="signal2" class="signal-circle"></div>
+    </div>
+
+    <!-- Zona de notificare -->
+    <div id="tonBenachrichtigung" style="text-align: center; margin-bottom: 10px; font-weight: bold;"></div>
+
+    <!-- Zona de sus - Culori -->
+    <div class="anzeigebereich">
+      <div class="button-container top-button">
+        <button class="color-button blue" data-type="color" data-value="blue">Albastru</button>
+      </div>
+      <div class="button-container top-button">
+        <button class="color-button white" data-type="color" data-value="white">Alb</button>
+      </div>
+      <div class="button-container top-button">
+        <button class="color-button yellow" data-type="color" data-value="yellow">Galben</button>
+      </div>
+    </div>
+
+    <!-- Butoane de mijloc (Ton înalt și Ton jos) -->
+    <div class="middle-buttons">
+      <div class="button-container">
+        <button class="tone-button tone-high" data-type="tone" data-value="high">Ton Înalt</button>
+      </div>
+      <div class="button-container">
+        <button class="tone-button tone-low" data-type="tone" data-value="low">Ton Scăzut</button>
+      </div>
+    </div>
+
+    <!-- Zona de jos - Pedale și culori -->
+    <div class="interaktionsbereich">
+      <div class="button-container">
+        <button class="pedal-button pedal-left" data-type="pedal" data-value="left" data-pedal="left"></button>
+      </div>
+
+      <div class="button-container">
+        <button class="color-button red" data-type="color" data-value="red">Roșu</button>
+      </div>
+
+      <div class="button-container">
+        <button class="color-button green" data-type="color" data-value="green">Verde</button>
+      </div>
+
+      <div class="button-container">
+        <button class="pedal-button pedal-right" data-type="pedal" data-value="right" data-pedal="right"></button>
+      </div>
+    </div>
+
+    </div>
+</div>
+  <!-- Selectare runde -->
+    <div class="runden-auswahl">
+      <h3>Alegeți numărul de runde:</h3>
+      <button onclick="setRounds(10)">10 Runde</button>
+      <button onclick="setRounds(20)">20 Runde</button>
+      <button onclick="setRounds(30)">30 Runde</button>
+    </div>
+    
+     <!-- Buton de repornire a jocului -->
+    <div class="spiel-neustart">
+      <button onclick="initializeGame()">Repornire</button>
+    </div>
+
+  <script>
+    // ===== JavaScript =====
+    const colors = ["red", "blue", "green", "yellow", "white"];
+    const tones = ["high", "low"];
+    const pedals = ["left", "right"];
+    const signalTypes = ["color-pedal", "tone-color", "color-color", "tone-pedal"];
+    let currentSignals = [];
+    let userChoices = [];
+    let isWaitingForSecondInput = false;
+
+    const toneHighAudio = new Audio('tONHOCH.mp3');
+    const toneLowAudio = new Audio('TONTIEF.mp3');
+
+    toneHighAudio.addEventListener('canplaythrough', () => console.log('Ton înalt încărcat.'));
+    toneLowAudio.addEventListener('canplaythrough', () => console.log('Ton scăzut încărcat.'));
+    toneHighAudio.addEventListener('error', () => console.error('Eroare la încărcarea tONHOCH.mp3'));
+    toneLowAudio.addEventListener('error', () => console.error('Eroare la încărcarea TONTIEF.mp3'));
+
+    let totalRounds = 0;
+    let currentRound = 0;
+    let correctAnswers = 0;
+
+    // Inițializare joc
+    function initializeGame() {
+      document.querySelector('.runden-auswahl').style.display = 'block';
+      currentRound = 0;
+      correctAnswers = 0;
+      userChoices = [];
+      isWaitingForSecondInput = false;
+      document.querySelector('.spiel-neustart')?.remove();
+    }
+
+    // Selectarea numărului de runde
+    function setRounds(rounds) {
+      totalRounds = rounds;
+      document.querySelector('.runden-auswahl').style.display = 'none';
+      nextRound();
+    }
+
+    // Începerea rundei de joc
+    function nextRound() {
+      if (currentRound < totalRounds) {
+        currentSignals = generateRandomSignals();
+        displaySignals(currentSignals);
+        userChoices = [];
+        isWaitingForSecondInput = false;
+        currentRound++;
+      } else {
+        endGame();
+      }
+    }
+
+    // Verificarea alegerii utilizatorului
+    function checkUserChoice() {
+      if (userChoices.length < 2) {
+        return;
+      }
+
+      let isCorrect = false;
+      const choice1 = userChoices[0];
+      const choice2 = userChoices[1];
+      const signal1 = currentSignals[0];
+      const signal2 = currentSignals[1];
+
+      const match1 = choice1.type === signal1.type && choice1.value === signal1.value;
+      const match2 = choice2.type === signal2.type && choice2.value === signal2.value;
+
+      const match3 = choice1.type === signal2.type && choice1.value === signal2.value;
+      const match4 = choice2.type === signal1.type && choice2.value === signal1.value;
+
+      if ((match1 && match2) || (match3 && match4)) {
+        isCorrect = true;
+        correctAnswers++;
+      }
+
+      userChoices = [];
+      isWaitingForSecondInput = false;
+      nextRound();
+    }
+
+    // Terminarea jocului și afișarea rezultatului
+    function endGame() {
+      const successRate = (correctAnswers / totalRounds) * 100;
+      if (successRate >= 60) {
+        alert(`Felicitări! Ai promovat cu ${successRate.toFixed(2)}%! 🎉`);
+      } else {
+        alert(`Din păcate, nu ai promovat. Rata ta de succes: ${successRate.toFixed(2)}%. Încearcă din nou! 😔`);
+      }
+
+      document.body.insertAdjacentHTML('beforeend', `
+        <div class="spiel-neustart">
+          <button onclick="initializeGame()">Repornire</button>
+        </div>
+      `);
+    }
+
+    // Generarea semnalelor aleatorii
+    function getRandom(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function generateRandomSignals() {
+      const randomType = getRandom(signalTypes);
+      let signal1, signal2;
+
+      switch (randomType) {
+        case "color-pedal":
+          signal1 = { type: "color", value: getRandom(colors) };
+          signal2 = { type: "pedal", value: getRandom(pedals) };
+          break;
+        case "tone-color":
+          signal1 = { type: "tone", value: getRandom(tones) };
+          signal2 = { type: "color", value: getRandom(colors) };
+          break;
+        case "color-color":
+          signal1 = { type: "color", value: getRandom(colors) };
+          signal2 = { type: "color", value: getRandom(colors.filter(c => c !== signal1.value)) };
+          break;
+        case "tone-pedal":
+          signal1 = { type: "tone", value: getRandom(tones) };
+          signal2 = { type: "pedal", value: getRandom(pedals) };
+          break;
+      }
+
+      return [signal1, signal2];
+    }
+
+    // Funcție pentru evidențierea unui semnal
+    function highlightSignal(signalElement) {
+      signalElement.classList.add("active");
+      setTimeout(() => {
+        signalElement.classList.remove("active");
+      }, 500);
+    }
+
+    function displaySignals(signals) {
+      const [s1, s2] = signals;
+      const signal1Element = document.getElementById("signal1");
+      const signal2Element = document.getElementById("signal2");
+      const tonBenachrichtigung = document.getElementById("tonBenachrichtigung");
+      tonBenachrichtigung.textContent = "";
+
+      if (s1.type === "color") {
+        signal1Element.setAttribute("data-color", s1.value);
+        signal1Element.style.backgroundColor = s1.value;
+        signal1Element.style.backgroundImage = "none";
+        signal1Element.removeAttribute("data-pedal");
+        highlightSignal(signal1Element);
+      } else if (s1.type === "pedal") {
+        signal1Element.style.backgroundColor = "lightgray";
+        signal1Element.style.backgroundImage = "url('https://cdn.gamma.app/fhpleqvbjim2f32/eebcb72d2ad843148a5bbdddbbf96de2/original/Pedallen.png')";
+        signal1Element.textContent = "";
+        signal1Element.setAttribute("data-pedal", s1.value);
+        signal1Element.removeAttribute("data-color");
+        highlightSignal(signal1Element);
+      } else if (s1.type === "tone") {
+        tonBenachrichtigung.textContent = s1.value === "high" ? "Ton Înalt!" : "Ton Scăzut!";
+        signal1Element.textContent = s1.value === "high" ? "↑" : "↓";
+        signal1Element.style.backgroundColor = s1.value === "high" ? "#d3d3d3" : "black";
+        signal1Element.removeAttribute("data-pedal");
+        signal1Element.removeAttribute("data-color");
+        highlightSignal(signal1Element);
+      }
+
+      if (s2.type === "color") {
+        signal2Element.setAttribute("data-color", s2.value);
+        signal2Element.style.backgroundColor = s2.value;
+        signal2Element.style.backgroundImage = "none";
+        signal2Element.removeAttribute("data-pedal");
+        highlightSignal(signal2Element);
+      } else if (s2.type === "pedal") {
+        signal2Element.style.backgroundColor = "lightgray";
+        signal2Element.style.backgroundImage = "url('https://cdn.gamma.app/fhpleqvbjim2f32/eebcb72d2ad843148a5bbdddbbf96de2/original/Pedallen.png')";
+        signal2Element.textContent = "";
+        signal2Element.setAttribute("data-pedal", s2.value);
+        signal2Element.removeAttribute("data-color");
+        highlightSignal(signal2Element);
+      } else if (s2.type === "tone") {
+        tonBenachrichtigung.textContent = s2.value === "high" ? "Ton Înalt!" : "Ton Scăzut!";
+        signal2Element.textContent = s2.value === "high" ? "↑" : "↓";
+        signal2Element.style.backgroundColor = s2.value === "high" ? "#d3d3d3" : "black";
+        signal2Element.removeAttribute("data-pedal");
+        signal2Element.removeAttribute("data-color");
+        highlightSignal(signal2Element);
+      }
+    }
+
+    // Event-Listener pentru butoane
+    document.querySelectorAll("button").forEach(button => {
+      button.addEventListener("click", () => {
+        if (userChoices.length < 2) {
+          userChoices.push({ type: button.dataset.type, value: button.dataset.value });
+
+          if (button.dataset.type === "tone") {
+            const audio = button.dataset.value === "high" ? toneHighAudio : toneLowAudio;
+            audio.currentTime = 0;
+            audio.play().catch(error => console.error('Eroare la redarea tonului:', error));
+          }
+
+          if (userChoices.length === 2) {
+            checkUserChoice();
+          }
+        }
+      });
+    });
+
+    // Parallax-Effekt mit Mausbewegung
+    const parallaxContainer = document.querySelector(".parallax-container");
+    const parallaxLayers = document.querySelectorAll(".parallax-layer");
+
+    document.addEventListener("mousemove", (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      parallaxLayers.forEach((layer, index) => {
+        const speed = (index + 1) * 0.1;
+        const xOffset = x * speed * 50;
+        const yOffset = y * speed * 30;
+
+        layer.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+      });
+    });
+
+    // Inițializarea jocului la pornire
+    initializeGame();
+  </script>
+</body>
+</html>
