@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111820">
-<title>MEHRFACH-REAKTIONSTEST · Reaktionskonsole · DE</title>
+<title>TEST DE REACȚIE MULTIPLĂ / MEHRFACH-REAKTIONSTEST · RO & DE</title>
 <style>
 :root{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#e8f2f4;background:#111820;font-synthesis:none}
 *{box-sizing:border-box}
@@ -19,6 +19,8 @@ button:focus-visible{outline:3px solid #219df5;outline-offset:3px}
 .top-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .badge-btn{font-size:12px;font-weight:700;background:#1e2b36;border:1px solid #384e5e;border-radius:9px;padding:8px 12px;color:#d6e8ee}
 .badge-btn:hover{background:#293b49}
+.lang-btn{background:#0284c7;border-color:#38bdf8;color:#fff}
+.lang-btn:hover{background:#0369a1}
 .telemetry{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:6px 4px 14px;font-size:13px;color:#cbd8de}
 .telemetry strong{color:#59e9a0}
 .grid-main{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
@@ -65,7 +67,6 @@ button:focus-visible{outline:3px solid #219df5;outline-offset:3px}
 .control.selected{outline:4px solid #0284c7;outline-offset:4px}
 .controls-note{font-size:12px;color:#4e565a;text-align:center;margin:14px 0 0;font-weight:600}
 .panel{border:1px solid #2b3947;border-radius:20px;background:#162029;color:#e8f2f4;padding:18px;box-shadow:0 12px 24px #0006}
-.panel h2{font-size:16px;margin:0 0 12px;color:#fff}
 .panel-section{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #243240}
 .panel-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
 .label-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;margin-bottom:8px}
@@ -87,72 +88,73 @@ button:focus-visible{outline:3px solid #219df5;outline-offset:3px}
 <main class="shell">
   <header class="heading">
     <div>
-      <h1>MEHRFACH-REAKTIONSTEST · REAKTIONSKONSOLE</h1>
-      <div class="subtitle">8 Lampen · 2 Pedalanzeigen · Verbesserter Bären- und Vogelton (Handy & PC)</div>
+      <h1 id="titleH1">TEST DE REACȚIE MULTIPLĂ · CONSOLĂ</h1>
+      <div class="subtitle" id="subtitleText">8 Lămpi · 2 Pedale · Sunet îmbunătățit de Urs și Pasăre (Telefon & PC)</div>
     </div>
     <div class="top-actions">
-      <button type="button" class="badge-btn" id="quickBirdBtn">♪ Vogelton ↑</button>
-      <button type="button" class="badge-btn" id="quickBearBtn">♪ Bärenton ↓</button>
-      <button type="button" class="badge-btn" id="muteBtn">Ton: Ein</button>
+      <button type="button" class="badge-btn lang-btn" id="langSwitchBtn">RO ⇄ DE</button>
+      <button type="button" class="badge-btn" id="quickBirdBtn">♪ Pasăre ↑</button>
+      <button type="button" class="badge-btn" id="quickBearBtn">♪ Urs ↓</button>
+      <button type="button" class="badge-btn" id="muteBtn">Sunet: Pornit</button>
     </div>
   </header>
 
   <div class="telemetry">
     <div>
-      <span id="roundLabel">Bereit zum Start</span> ·
-      <span>Treffer: <strong id="scoreLabel">0 / 0</strong></span> ·
-      <span>Serie: <strong id="streakLabel">0</strong></span> ·
-      <span>Ø Zeit: <strong id="avgTimeLabel">—</strong></span>
+      <span id="roundLabel">Pregătit</span> ·
+      <span id="hitsWord">Corecte:</span> <strong id="scoreLabel">0 / 0</strong> ·
+      <span id="streakWord">Serie:</span> <strong id="streakLabel">0</strong> ·
+      <span id="avgWord">Timp mediu:</span> <strong id="avgTimeLabel">—</strong>
     </div>
-    <div id="lastFeedback">Tipp: Tasten 1–5, A/D und Pfeiltasten ↑/↓ funktionieren auch!</div>
+    <div id="lastFeedback">Taste: 1–5, A/D, Săgeți ↑/↓</div>
   </div>
 
   <div class="grid-main">
     <div>
       <section class="display" aria-label="Signalfeld">
         <div class="display-header">
-          <span>SIGNALFELD · 8 LAMPEN + 2 PEDALE</span>
-          <button type="button" class="badge-btn" id="toggleToneHintBtn" style="padding:4px 8px;font-size:11px">Ton-Text: Sichtbar</button>
+          <span id="signalHeaderTitle">PANOU SEMNALE · 8 LĂMPI + 2 PEDALE</span>
+          <button type="button" class="badge-btn" id="toggleToneHintBtn" style="padding:4px 8px;font-size:11px">Text sunet: Vizibil</button>
         </div>
         <div class="timer-bar-wrap hidden" id="timerWrap"><div class="timer-bar" id="timerBar"></div></div>
         <div class="lamps" id="lamps"></div>
         <div class="pedal-row">
           <div class="pedal-indicator" id="pedalLeft">L</div>
-          <div class="speaker-box" id="notification">Warten auf Start</div>
+          <div class="speaker-box" id="notification">Așteptare</div>
           <div class="pedal-indicator" id="pedalRight">R</div>
         </div>
         <div class="display-meta">
-          <span id="choiceProgress">Auswahl: 0 / 2</span>
-          <span id="modeSummary">2 Signale · 30 Runden</span>
+          <span id="choiceProgress">Alese: 0 / 2</span>
+          <span id="modeSummary">2 Semnale · 30 Runde</span>
         </div>
       </section>
 
       <section class="console" id="console">
         <div class="console-top">
-          <span id="consoleHeading">BEDIENFELD · ANTWORTEN WÄHLEN</span>
-          <button type="button" id="undoBtn" class="badge-btn hidden" style="padding:4px 8px;font-size:11px">Auswahl löschen</button>
+          <span id="consoleHeading">PUPITRU DE COMANDĂ · ALEGE RĂSPUNSURILE</span>
+          <button type="button" id="undoBtn" class="badge-btn hidden" style="padding:4px 8px;font-size:11px">Anulează</button>
         </div>
         <div class="control-layout">
-          <button type="button" class="control colored blue" data-type="color" data-value="blue"><span>Blau</span><small>[1 / B]</small></button>
-          <button type="button" class="control colored white" data-type="color" data-value="white"><span>Weiß</span><small>[2 / W]</small></button>
-          <button type="button" class="control colored yellow" data-type="color" data-value="yellow"><span>Gelb</span><small>[3 / G]</small></button>
-          <button type="button" class="badge-btn repeat-slot" id="repeatToneBtn" title="Ton wiederholen (Leertaste)">↻ Ton</button>
-          <button type="button" class="control colored red" data-type="color" data-value="red"><span>Rot</span><small>[4 / R]</small></button>
-          <button type="button" class="control colored green" data-type="color" data-value="green"><span>Grün</span><small>[5 / V]</small></button>
+          <button type="button" class="control colored blue" data-type="color" data-value="blue"><span id="btnBlue">Albastru</span><small>[1 / B]</small></button>
+          <button type="button" class="control colored white" data-type="color" data-value="white"><span id="btnWhite">Alb</span><small>[2 / W]</small></button>
+          <button type="button" class="control colored yellow" data-type="color" data-value="yellow"><span id="btnYellow">Galben</span><small>[3 / G]</small></button>
+          <button type="button" class="badge-btn repeat-slot" id="repeatToneBtn">↻ Ton</button>
+          <button type="button" class="control colored red" data-type="color" data-value="red"><span id="btnRed">Roșu</span><small>[4 / R]</small></button>
+          <button type="button" class="control colored green" data-type="color" data-value="green"><span id="btnGreen">Verde</span><small>[5 / V]</small></button>
           <button type="button" class="control pedal left" data-type="pedal" data-value="left"><span>L</span><small>[A / ←]</small></button>
           <button type="button" class="control pedal right" data-type="pedal" data-value="right"><span>R</span><small>[D / →]</small></button>
-          <button type="button" class="control tone high" data-type="tone" data-value="high"><span>Hoher Ton ↑</span><small>Vogel [↑/H]</small></button>
-          <button type="button" class="control tone low" data-type="tone" data-value="low"><span>Tiefer Ton ↓</span><small>Bär [↓/T]</small></button>
+          <button type="button" class="control tone high" data-type="tone" data-value="high"><span id="btnHigh">Ton Înalt ↑</span><small id="btnHighSub">Pasăre [↑/H]</small></button>
+          <button type="button" class="control tone low" data-type="tone" data-value="low"><span id="btnLow">Ton Grav ↓</span><small id="btnLowSub">Urs [↓/T]</small></button>
         </div>
-        <p class="controls-note" id="choiceHint">Drücke die Tasten, die den Signalen entsprechen (nochmal tippen hebt Auswahl auf).</p>
+        <p class="controls-note" id="choiceHint">Apasă butoanele care corespund semnalelor (apasă din nou pentru a deselecta).</p>
       </section>
     </div>
 
     <aside class="panel">
       <div class="panel-section">
         <div class="label-row">
-          <span>1. Rundenzahl wählen</span>
-          <span id="selectedRoundsText" style="color:#34d399">30 Runden</span>
+          <span id="lblStep1">1. Alege numărul de runde</span>
+          <span id="selectedRoundsText" style="color:#34d399">30</span>
         </div>
         <div class="btn-grid" id="roundButtons">
           <button type="button" class="opt-btn" data-rounds="10">10</button>
@@ -166,50 +168,99 @@ button:focus-visible{outline:3px solid #219df5;outline-offset:3px}
         </div>
         <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
           <input type="range" id="roundsSlider" min="5" max="300" step="5" value="30" style="flex:1">
-          <button type="button" class="opt-btn" id="endlessBtn">∞ Endlos</button>
+          <button type="button" class="opt-btn" id="endlessBtn">∞ Infinit</button>
         </div>
       </div>
 
       <div class="panel-section">
-        <div class="label-row"><span>2. Gleichzeitige Signale</span></div>
+        <div class="label-row"><span id="lblStep2">2. Semnale simultane</span></div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px" id="sigCountButtons">
-          <button type="button" class="opt-btn" data-sig="1">1 Signal</button>
-          <button type="button" class="opt-btn active" data-sig="2">2 Signale</button>
-          <button type="button" class="opt-btn" data-sig="3">3 Signale</button>
+          <button type="button" class="opt-btn" data-sig="1" id="sig1Btn">1 Semnal</button>
+          <button type="button" class="opt-btn active" data-sig="2" id="sig2Btn">2 Semnale</button>
+          <button type="button" class="opt-btn" data-sig="3" id="sig3Btn">3 Semnale</button>
         </div>
       </div>
 
       <div class="panel-section">
-        <div class="label-row"><span>3. Zeitlimit pro Runde</span></div>
+        <div class="label-row"><span id="lblStep3">3. Limită de timp pe rundă</span></div>
         <div class="btn-grid" id="timeButtons">
-          <button type="button" class="opt-btn active" data-time="0">Kein Limit</button>
-          <button type="button" class="opt-btn" data-time="3500">3,5 Sek.</button>
-          <button type="button" class="opt-btn" data-time="2200">2,2 Sek.</button>
-          <button type="button" class="opt-btn" data-time="1500">1,5 Sek.</button>
+          <button type="button" class="opt-btn active" data-time="0" id="time0Btn">Fără limită</button>
+          <button type="button" class="opt-btn" data-time="3500">3,5 s</button>
+          <button type="button" class="opt-btn" data-time="2200">2,2 s</button>
+          <button type="button" class="opt-btn" data-time="1500">1,5 s</button>
         </div>
       </div>
 
       <div class="panel-section">
         <div class="label-row">
-          <span>4. Verbesserte Töne & Lautstärke</span>
+          <span id="lblStep4">4. Sunete & Volum</span>
           <span id="volLabel">85%</span>
         </div>
         <input type="range" id="volSlider" min="5" max="100" step="5" value="85" style="width:100%">
         <div class="sound-test-grid">
-          <button type="button" class="sound-btn" id="testHighBtn">♪ Hoher Ton (Vogel ↑)<br><small>Dreifaches Zwitschern</small></button>
-          <button type="button" class="sound-btn bear" id="testLowBtn">♪ Tiefer Ton (Bär ↓)<br><small>Kräftiges Bass-Brummen</small></button>
+          <button type="button" class="sound-btn" id="testHighBtn">♪ Ton Înalt (Pasăre ↑)</button>
+          <button type="button" class="sound-btn bear" id="testLowBtn">♪ Ton Grav (Urs ↓)</button>
         </div>
       </div>
 
-      <button type="button" class="start-btn" id="startBtn">▶ Test jetzt starten (30 Runden)</button>
+      <button type="button" class="start-btn" id="startBtn">▶ Start Test (30)</button>
       <div class="result-box hidden" id="resultBox"></div>
     </aside>
   </div>
 </main>
 <script>
 'use strict';
+let lang='ro';
+const DICT={
+  ro:{
+    title:'TEST DE REACȚIE MULTIPLĂ · CONSOLĂ',
+    sub:'8 Lămpi · 2 Pedale · Sunet îmbunătățit de Urs și Pasăre (Telefon & PC)',
+    birdQuick:'♪ Pasăre ↑',bearQuick:'♪ Urs ↓',muteOn:'Sunet: Pornit',muteOff:'Sunet: Oprit',
+    ready:'Pregătit',hits:'Corecte:',streak:'Serie:',avg:'Timp mediu:',
+    signalHeader:'PANOU SEMNALE · 8 LĂMPI + 2 PEDALE',
+    toneVis:'Text sunet: Vizibil',toneEar:'Doar auditiv',
+    wait:'Așteptare',chosen:'Alese:',consoleHead:'PUPITRU DE COMANDĂ · ALEGE RĂSPUNSURILE',
+    undo:'Anulează',blue:'Albastru',white:'Alb',yellow:'Galben',red:'Roșu',green:'Verde',
+    high:'Ton Înalt ↑',highSub:'Pasăre [↑/H]',low:'Ton Grav ↓',lowSub:'Urs [↓/T]',
+    hint:'Apasă butoanele care corespund semnalelor (apasă din nou pentru a deselecta).',
+    s1:'1. Alege numărul de runde',s2:'2. Semnale simultane',s3:'3. Limită de timp pe rundă',s4:'4. Sunete & Volum',
+    endless:'∞ Infinit',sig1:'1 Semnal',sig2:'2 Semnale',sig3:'3 Semnale',noLim:'Fără limită',
+    tHigh:'♪ Ton Înalt (Pasăre ↑)',tLow:'♪ Ton Grav (Urs ↓)',
+    start:'▶ Start Test',restart:'↻ Reîncepe Testul',
+    roundOf:(r,t)=>'Runda '+r+' din '+t,endlessRound:r=>'Infinit · Runda '+r,
+    highNote:'Ton înalt · Pasăre ↑',lowNote:'Ton grav · Urs ↓',earNote:'♪ Semnal sonor activ (Auditiv)',
+    optNote:n=>'Semnale vizuale ('+n+')',
+    ok:ms=>'✓ Corect! ('+ms+' ms)',err:ms=>'✗ Greșit ('+ms+' ms)',timeout:'⏱ Timp expirat!',
+    pass:'Felicitări! Ai promovat! 🎉',fail:'Mai exersează',
+    resText:(c,d,p,a)=>'Răspunsuri corecte: '+c+' din '+d+' ('+p+'%) · Timp mediu: '+a+' ms',
+    roundsWord:'runde'
+  },
+  de:{
+    title:'MEHRFACH-REAKTIONSTEST · REAKTIONSKONSOLE',
+    sub:'8 Lampen · 2 Pedalanzeigen · Verbesserter Bären- und Vogelton (Handy & PC)',
+    birdQuick:'♪ Vogelton ↑',bearQuick:'♪ Bärenton ↓',muteOn:'Ton: Ein',muteOff:'Ton: Aus',
+    ready:'Bereit',hits:'Treffer:',streak:'Serie:',avg:'Ø Zeit:',
+    signalHeader:'SIGNALFELD · 8 LAMPEN + 2 PEDALE',
+    toneVis:'Ton-Text: Sichtbar',toneEar:'Nur Gehör',
+    wait:'Warten',chosen:'Auswahl:',consoleHead:'BEDIENFELD · ANTWORTEN WÄHLEN',
+    undo:'Auswahl löschen',blue:'Blau',white:'Weiß',yellow:'Gelb',red:'Rot',green:'Grün',
+    high:'Hoher Ton ↑',highSub:'Vogel [↑/H]',low:'Tiefer Ton ↓',lowSub:'Bär [↓/T]',
+    hint:'Drücke die Tasten, die den Signalen entsprechen (nochmal tippen hebt Auswahl auf).',
+    s1:'1. Anzahl der Runden wählen',s2:'2. Gleichzeitige Signale',s3:'3. Zeitlimit pro Runde',s4:'4. Töne & Lautstärke',
+    endless:'∞ Endlos',sig1:'1 Signal',sig2:'2 Signale',sig3:'3 Signale',noLim:'Kein Limit',
+    tHigh:'♪ Hoher Ton (Vogel ↑)',tLow:'♪ Tiefer Ton (Bär ↓)',
+    start:'▶ Test starten',restart:'↻ Neu starten',
+    roundOf:(r,t)=>'Runde '+r+' von '+t,endlessRound:r=>'Endlos · Runde '+r,
+    highNote:'Hoher Ton · Vogel ↑',lowNote:'Tiefer Ton · Bär ↓',earNote:'♪ Tonsignal aktiv (Gehör)',
+    optNote:n=>'Optische Signale ('+n+')',
+    ok:ms=>'✓ Richtig! ('+ms+' ms)',err:ms=>'✗ Fehler ('+ms+' ms)',timeout:'⏱ Zeit abgelaufen!',
+    pass:'Glückwunsch! Bestanden! 🎉',fail:'Training fortsetzen',
+    resText:(c,d,p,a)=>'Richtige Antworten: '+c+' von '+d+' ('+p+'%) · Ø Zeit: '+a+' ms',
+    roundsWord:'Runden'
+  }
+};
+
 const COLORS=['red','blue','green','yellow','white'];
-const COLOR_DE={blue:'Blau',white:'Weiß',yellow:'Gelb',red:'Rot',green:'Grün'};
 const TONES=['high','low'];
 const PEDALS=['left','right'];
 const lampsContainer=document.getElementById('lamps');
@@ -229,6 +280,48 @@ for(let i=0;i<8;i++){
 
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 
+function applyLang(){
+  const t=DICT[lang];
+  document.getElementById('titleH1').textContent=t.title;
+  document.getElementById('subtitleText').textContent=t.sub;
+  document.getElementById('quickBirdBtn').textContent=t.birdQuick;
+  document.getElementById('quickBearBtn').textContent=t.bearQuick;
+  document.getElementById('muteBtn').textContent=muted?t.muteOff:t.muteOn;
+  document.getElementById('hitsWord').textContent=t.hits;
+  document.getElementById('streakWord').textContent=t.streak;
+  document.getElementById('avgWord').textContent=t.avg;
+  document.getElementById('signalHeaderTitle').textContent=t.signalHeader;
+  document.getElementById('toggleToneHintBtn').textContent=showToneText?t.toneVis:t.toneEar;
+  document.getElementById('consoleHeading').textContent=t.consoleHead;
+  document.getElementById('undoBtn').textContent=t.undo;
+  document.getElementById('btnBlue').textContent=t.blue;
+  document.getElementById('btnWhite').textContent=t.white;
+  document.getElementById('btnYellow').textContent=t.yellow;
+  document.getElementById('btnRed').textContent=t.red;
+  document.getElementById('btnGreen').textContent=t.green;
+  document.getElementById('btnHigh').textContent=t.high;
+  document.getElementById('btnHighSub').textContent=t.highSub;
+  document.getElementById('btnLow').textContent=t.low;
+  document.getElementById('btnLowSub').textContent=t.lowSub;
+  document.getElementById('choiceHint').textContent=t.hint;
+  document.getElementById('lblStep1').textContent=t.s1;
+  document.getElementById('lblStep2').textContent=t.s2;
+  document.getElementById('lblStep3').textContent=t.s3;
+  document.getElementById('lblStep4').textContent=t.s4;
+  document.getElementById('endlessBtn').textContent=t.endless;
+  document.getElementById('sig1Btn').textContent=t.sig1;
+  document.getElementById('sig2Btn').textContent=t.sig2;
+  document.getElementById('sig3Btn').textContent=t.sig3;
+  document.getElementById('time0Btn').textContent=t.noLim;
+  document.getElementById('testHighBtn').textContent=t.tHigh;
+  document.getElementById('testLowBtn').textContent=t.tLow;
+  if(!playing){
+    document.getElementById('roundLabel').textContent=t.ready;
+    document.getElementById('notification').textContent=t.wait;
+  }
+  updateSetupLabels();
+}
+
 function getAudio(){
   const C=window.AudioContext||window.webkitAudioContext;
   if(!C)return null;
@@ -247,7 +340,6 @@ function speakTone(value){
     master.connect(ctx.destination);
 
     if(value==='low'){
-      // Kräftiger Bärenton mit Oberwellen (auch auf Handy-Lautsprechern klar hörbar)
       const dur=0.68;
       const filter=ctx.createBiquadFilter();
       filter.type='lowpass';
@@ -276,7 +368,6 @@ function speakTone(value){
       o1.start(now);o2.start(now);o3.start(now);lfo.start(now);
       o1.stop(now+dur+.03);o2.stop(now+dur+.03);o3.stop(now+dur+.03);lfo.stop(now+dur+.03);
     }else{
-      // Melodischer 3-Silben Vogelton
       const chirp=(off,dur,f1,f2,f3,v)=>{
         const t=now+off,o=ctx.createOscillator(),g=ctx.createGain();
         o.type='sine';
@@ -322,6 +413,7 @@ function buildSignals(){
 }
 
 function renderSignals(){
+  const t=DICT[lang];
   Array.from(lampsContainer.children).forEach((el,i)=>{
     el.className='lamp';el.textContent=String(i+1);
   });
@@ -338,8 +430,8 @@ function renderSignals(){
   });
   const tone=currentSignals.find(s=>s.type==='tone');
   document.getElementById('notification').textContent=tone
-    ?(showToneText?(tone.value==='high'?'Hoher Ton · Vogel ↑':'Tiefer Ton · Bär ↓'):'♪ Tonsignal aktiv (Gehör)')
-    :'Optische Signale ('+signalsPerRound+')';
+    ?(showToneText?(tone.value==='high'?t.highNote:t.lowNote):t.earNote)
+    :t.optNote(signalsPerRound);
   if(tone)speakTone(tone.value);
 }
 
@@ -351,6 +443,7 @@ function updateStatsUI(){
 }
 
 function nextRound(){
+  const t=DICT[lang];
   if(timerId){clearInterval(timerId);timerId=null;}
   if(!isEndless&&currentRound>=totalRounds){endGame();return;}
   currentRound++;
@@ -360,8 +453,8 @@ function nextRound(){
   roundStart=performance.now();
   controls.forEach(b=>b.classList.remove('selected'));
   document.getElementById('undoBtn').classList.add('hidden');
-  document.getElementById('roundLabel').textContent=isEndless?'Endlos · Runde '+currentRound:'Runde '+currentRound+' von '+totalRounds;
-  document.getElementById('choiceProgress').textContent='Auswahl: 0 / '+signalsPerRound;
+  document.getElementById('roundLabel').textContent=isEndless?t.endlessRound(currentRound):t.roundOf(currentRound,totalRounds);
+  document.getElementById('choiceProgress').textContent=t.chosen+' 0 / '+signalsPerRound;
   updateStatsUI();
   renderSignals();
 
@@ -374,7 +467,7 @@ function nextRound(){
       if(left<=0){
         clearInterval(timerId);timerId=null;
         waiting=true;streak=0;totalTimeMs+=timeLimitMs;
-        document.getElementById('lastFeedback').textContent='⏱ Zeit abgelaufen!';
+        document.getElementById('lastFeedback').textContent=DICT[lang].timeout;
         setTimeout(nextRound,550);
       }
     },50);
@@ -386,11 +479,12 @@ function nextRound(){
 function begin(){
   playing=true;currentRound=0;correctAnswers=0;streak=0;totalTimeMs=0;
   document.getElementById('resultBox').classList.add('hidden');
-  document.getElementById('startBtn').textContent='↻ Neu starten';
+  document.getElementById('startBtn').textContent=DICT[lang].restart;
   nextRound();
 }
 
 function choose(btn){
+  const t=DICT[lang];
   const type=btn.dataset.type,value=btn.dataset.value;
   if(!playing){if(type==='tone')speakTone(value);return;}
   if(waiting)return;
@@ -399,7 +493,7 @@ function choose(btn){
   if(existIdx!==-1){
     userChoices.splice(existIdx,1);
     btn.classList.remove('selected');
-    document.getElementById('choiceProgress').textContent='Auswahl: '+userChoices.length+' / '+signalsPerRound;
+    document.getElementById('choiceProgress').textContent=t.chosen+' '+userChoices.length+' / '+signalsPerRound;
     if(!userChoices.length)document.getElementById('undoBtn').classList.add('hidden');
     return;
   }
@@ -408,7 +502,7 @@ function choose(btn){
   btn.classList.add('selected');
   if(type==='tone')speakTone(value);
   document.getElementById('undoBtn').classList.remove('hidden');
-  document.getElementById('choiceProgress').textContent='Auswahl: '+userChoices.length+' / '+signalsPerRound;
+  document.getElementById('choiceProgress').textContent=t.chosen+' '+userChoices.length+' / '+signalsPerRound;
 
   if(userChoices.length===signalsPerRound){
     waiting=true;
@@ -423,16 +517,17 @@ function choose(btn){
     }
     if(ok&&rem.length===0){
       correctAnswers++;streak++;
-      document.getElementById('lastFeedback').textContent='✓ Richtig! ('+ms+' ms)';
+      document.getElementById('lastFeedback').textContent=t.ok(ms);
     }else{
       streak=0;
-      document.getElementById('lastFeedback').textContent='✗ Fehler ('+ms+' ms)';
+      document.getElementById('lastFeedback').textContent=t.err(ms);
     }
     setTimeout(nextRound,340);
   }
 }
 
 function endGame(){
+  const t=DICT[lang];
   playing=false;
   const done=Math.max(1,currentRound);
   const pct=(correctAnswers/done)*100;
@@ -440,10 +535,20 @@ function endGame(){
   updateStatsUI();
   const box=document.getElementById('resultBox');
   box.classList.remove('hidden');
-  box.innerHTML='<strong>'+(pct>=60?'Glückwunsch! Bestanden! 🎉':'Training fortsetzen')+'</strong><br>'+
-    'Richtige Antworten: '+correctAnswers+' von '+done+' ('+pct.toFixed(1)+'%) · Ø Zeit: '+avg+' ms';
+  box.innerHTML='<strong>'+(pct>=60?t.pass:t.fail)+'</strong><br>'+t.resText(correctAnswers,done,pct.toFixed(1),avg);
 }
 
+function updateSetupLabels(){
+  const t=DICT[lang];
+  document.getElementById('selectedRoundsText').textContent=isEndless?t.endless:totalRounds+' '+t.roundsWord;
+  document.getElementById('modeSummary').textContent=signalsPerRound+' · '+(isEndless?t.endless:totalRounds+' '+t.roundsWord);
+  if(!playing)document.getElementById('startBtn').textContent=t.start+' ('+(isEndless?t.endless:totalRounds)+')';
+}
+
+document.getElementById('langSwitchBtn').addEventListener('click',()=>{
+  lang=lang==='ro'?'de':'ro';
+  applyLang();
+});
 controls.forEach(b=>b.addEventListener('click',()=>choose(b)));
 document.getElementById('startBtn').addEventListener('click',begin);
 document.getElementById('quickBirdBtn').addEventListener('click',()=>speakTone('high'));
@@ -451,32 +556,25 @@ document.getElementById('quickBearBtn').addEventListener('click',()=>speakTone('
 document.getElementById('testHighBtn').addEventListener('click',()=>speakTone('high'));
 document.getElementById('testLowBtn').addEventListener('click',()=>speakTone('low'));
 document.getElementById('repeatToneBtn').addEventListener('click',()=>{
-  const t=currentSignals.find(s=>s.type==='tone');
-  speakTone(t?t.value:'high');
+  const s=currentSignals.find(x=>x.type==='tone');
+  speakTone(s?s.value:'high');
 });
 document.getElementById('undoBtn').addEventListener('click',()=>{
   userChoices=[];controls.forEach(b=>b.classList.remove('selected'));
   document.getElementById('undoBtn').classList.add('hidden');
-  document.getElementById('choiceProgress').textContent='Auswahl: 0 / '+signalsPerRound;
+  document.getElementById('choiceProgress').textContent=DICT[lang].chosen+' 0 / '+signalsPerRound;
 });
 document.getElementById('muteBtn').addEventListener('click',e=>{
-  muted=!muted;e.target.textContent=muted?'Ton: Aus':'Ton: Ein';
+  muted=!muted;e.target.textContent=muted?DICT[lang].muteOff:DICT[lang].muteOn;
 });
 document.getElementById('toggleToneHintBtn').addEventListener('click',e=>{
   showToneText=!showToneText;
-  e.target.textContent=showToneText?'Ton-Text: Sichtbar':'Nur Gehör';
+  e.target.textContent=showToneText?DICT[lang].toneVis:DICT[lang].toneEar;
 });
 document.getElementById('volSlider').addEventListener('input',e=>{
   volume=Number(e.target.value)/100;
   document.getElementById('volLabel').textContent=e.target.value+'%';
 });
-
-function updateSetupLabels(){
-  document.getElementById('selectedRoundsText').textContent=isEndless?'Endlos-Modus':totalRounds+' Runden';
-  document.getElementById('modeSummary').textContent=signalsPerRound+' Signale · '+(isEndless?'Endlos':totalRounds+' Runden');
-  document.getElementById('startBtn').textContent='▶ Test starten ('+(isEndless?'Endlos':totalRounds+' Runden')+')';
-}
-
 document.querySelectorAll('#roundButtons .opt-btn').forEach(b=>b.addEventListener('click',()=>{
   isEndless=false;totalRounds=Number(b.dataset.rounds);
   document.getElementById('roundsSlider').value=String(totalRounds);
@@ -517,6 +615,7 @@ window.addEventListener('keydown',e=>{
   else if(k==='h'||e.key==='ArrowUp')choose(find('tone','high'));
   else if(k==='t'||e.key==='ArrowDown')choose(find('tone','low'));
 });
+applyLang();
 </script>
 </body>
 </html>
