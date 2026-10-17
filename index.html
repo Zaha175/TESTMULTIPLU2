@@ -1,678 +1,522 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TEST MULTIPLU</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    /* ===== CSS ===== */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      font-family: sans-serif;
-      overflow: hidden;
-    }
-
-    /* Parallax-Hintergrund mit dynamischem Farbverlauf */
-    .parallax-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      perspective: 1000px; /* 3D-Effekt */
-    }
-
-    .parallax-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      transform-style: preserve-3d; /* 3D-Effekt */
-    }
-
-    /* Dynamischer Hintergrund mit Farbverlauf */
-    .parallax-layer.background {
-      background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #fbc2eb);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-      z-index: -3;
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Mittlere Ebene mit Parallax-Effekt */
-    .parallax-layer.middleground {
-      background-image: url('https://cdn.gamma.app/fhpleqvbjim2f32/8b7029ebd925487ba916faf7d1996c98/original/DALL-E-2025-01-03-00.46.57---A-clean-and-minimalist-3D-space-themed-background-for-a-game-interface.-The-scene-features-a-distant-view-of-a-planet-with-subtle-atmospheric-glow-su.webp');
-      z-index: -2;
-    }
-
-    /* Vordere Ebene für Spielinhalte */
-    .parallax-layer.foreground {
-      z-index: 1; /* Über den anderen Layern, aber unter den Buttons */
-      position: relative; /* Notwendig, damit z-index funktioniert */
-    }
-
-    /* Zona de sus - Afișare semnal */
-    .anzeigebereich {
-      flex: 2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 4rem;
-      background-color: transparent;
-    }
-
-    /* Cercuri semnal mit 3D-Effekt */
-    .signal-circle {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background-color: lightgray;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 36px;
-      font-weight: bold;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      color: transparent;
-      border: 3px solid transparent;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      transform-style: preserve-3d; /* 3D-Effekt */
-    }
-
-    .signal-circle:hover {
-      transform: rotateY(180deg);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
-
-    /* Hervorhebung für aktive Signale */
-    .signal-circle.active {
-      border-color: black;
-    }
-
-    /* Stil für S de pe pedala stângă în zona de sus */
-    .signal-circle[data-pedal="left"]::after {
-      content: "S";
-      color: yellow;
-      font-size: 36px;
-      font-weight: bold;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* Stil für D de pe pedala dreaptă în zona de sus */
-    .signal-circle[data-pedal="right"]::after {
-      content: "D";
-      color: yellow;
-      font-size: 36px;
-      font-weight: bold;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* Symbole für Farben */
-    .signal-circle[data-color="red"]::before {
-      content: "■";
-      color: red;
-      font-size: 50px;
-    }
-
-    .signal-circle[data-color="blue"]::before {
-      content: "●";
-      color: blue;
-      font-size: 50px;
-    }
-
-    .signal-circle[data-color="green"]::before {
-      content: "▲";
-      color: green;
-      font-size: 50px;
-    }
-
-    .signal-circle[data-color="yellow"]::before {
-      content: "◆";
-      color: yellow;
-      font-size: 50px;
-    }
-
-    .signal-circle[data-color="white"]::before {
-      content: "★";
-      color: white;
-      font-size: 50px;
-    }
-
-    /* Zona de notificare */
-    #tonBenachrichtigung {
-      text-align: center;
-      margin-bottom: 10px;
-      font-weight: bold;
-      color: orange;
-      font-size: 18px;
-    }
-
-    /* Zona de sus - Culori */
-    .anzeigebereich {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      background-color: transparent;
-      padding: 1rem;
-    }
-
-    .top-button {
-      text-align: center;
-      margin: 0 10px;
-    }
-
-    .color-button {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid #ccc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      transition: transform 0.3s ease;
-    }
-
-    .color-button:hover {
-      transform: scale(1.1);
-    }
-
-    .color-button.blue { background-color: blue; color: white; }
-    .color-button.white { background-color: white; border: 2px solid #ddd; }
-    .color-button.yellow { background-color: yellow; }
-
-    /* Butoane de mijloc (Ton înalt și Ton jos) */
-    .middle-buttons {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin: 20px 0;
-    }
-
-    .tone-button {
-      width: 100px;
-      height: 50px;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: bold;
-      transition: transform 0.3s ease;
-    }
-
-    .tone-button:hover {
-      transform: scale(1.1);
-    }
-
-    .tone-button.tone-high {
-      background-color: lightgray;
-      color: black;
-    }
-
-    .tone-button.tone-low {
-      background-color: black;
-      color: white;
-    }
-
-    /* Zona de jos - Pedale și culori */
-    .interaktionsbereich {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      align-items: center;
-      justify-items: center;
-      background-color: transparent;
-      padding: 1rem;
-    }
-
-    /* Stil pedale */
-    .pedal-button {
-      width: 150px;
-      height: 80px;
-      clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-      font-size: 18px;
-      text-align: center;
-      margin: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-
-    .pedal-button:hover {
-      transform: scale(1.1);
-    }
-
-    .pedal-left {
-      background: linear-gradient(to bottom, #d3d3d3, #a9a9a9);
-    }
-
-    .pedal-right {
-      background: linear-gradient(to bottom, #6e6e6e, #4e4e4e);
-    }
-
-    /* Stil pentru S de pe pedala stângă în zona de jos */
-    .pedal-button[data-pedal="left"]::after {
-      content: "S";
-      color: yellow;
-      font-size: 36px;
-      font-weight: bold;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* Stil pentru D de pe pedala dreaptă în zona de jos */
-    .pedal-button[data-pedal="right"]::after {
-      content: "D";
-      color: yellow;
-      font-size: 36px;
-      font-weight: bold;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* Culori laterale */
-    .color-button.red { background-color: red; color: white; }
-    .color-button.green { background-color: green; color: white; }
-    
-    .interaktionsbereich .color-button {
-        width: 80px;
-        height: 80px;
-        margin: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-    }
-
-    /* Etichete */
-    .button-container span {
-      display: block;
-      margin-top: 5px;
-      font-size: 14px;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    /* Selectare runde */
-    .runden-auswahl {
-      text-align: center;
-      margin: 20px auto;
-      padding: 10px;
-      z-index: 10;
-      position: relative;
-    }
-
-    .runden-auswahl h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .runden-auswahl button {
-      margin: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 5px;
-    }
-
-    .runden-auswahl button:hover {
-      background-color: #45a049;
-    }
-
-    /* Buton de repornire a jocului */
-    .spiel-neustart {
-      text-align: center;
-      margin-top: 20px;
-       z-index: 10;
-      position: relative;
-    }
-
-    .spiel-neustart button {
-      padding: 10px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      background-color: #ff9800;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    .spiel-neustart button:hover {
-      background-color: #e68900;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111820">
+<title>MEHRFACH-REAKTIONSTEST · Reaktionskonsole · DE</title>
+<style>
+:root{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#e8f2f4;background:#111820;font-synthesis:none}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0,#2d3a45,#121820 68%);padding:clamp(10px,2.2vw,24px)}
+button,input,select{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible{outline:3px solid #219df5;outline-offset:3px}
+.shell{max-width:1080px;margin:auto}
+.heading{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;color:#e8f2f4;gap:12px;padding:4px 4px 12px;border-bottom:1px solid #263340;margin-bottom:14px}
+.heading h1{font-size:clamp(17px,3vw,24px);margin:0;letter-spacing:1px}
+.heading .subtitle{font-size:12px;color:#9fb2bc;margin-top:3px}
+.top-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.badge-btn{font-size:12px;font-weight:700;background:#1e2b36;border:1px solid #384e5e;border-radius:9px;padding:8px 12px;color:#d6e8ee}
+.badge-btn:hover{background:#293b49}
+.telemetry{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:6px 4px 14px;font-size:13px;color:#cbd8de}
+.telemetry strong{color:#59e9a0}
+.grid-main{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
+@media(min-width:920px){.grid-main{grid-template-columns:7fr 5fr}}
+.display{background:linear-gradient(165deg,#32363b 0%,#484d54 48%,#23272b 100%);padding:clamp(14px,2.6vw,24px);border:5px solid #16191d;border-radius:26px;box-shadow:inset 0 2px 6px rgba(255,255,255,.2),0 14px 28px rgba(0,0,0,.55)}
+.display-header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;font-size:11px;font-weight:700;letter-spacing:1.8px;color:#d0d7dc}
+.timer-bar-wrap{width:100%;height:6px;background:#111519;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.timer-bar{height:100%;background:#34d399;width:100%}
+.lamps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,2.4vw,22px);justify-items:center;max-width:640px;margin:auto}
+.lamp{aspect-ratio:1;width:100%;max-width:96px;border-radius:50%;background:radial-gradient(circle at 35% 25%,#23272c 0%,#0d0f12 54%,#030405 76%);border:3px solid #101215;box-shadow:inset 0 5px 10px #000,inset 0 -1px 2px #7775,0 2px 2px #ffffff20;position:relative;display:grid;place-items:center;color:#556068;font-weight:800;font-size:12px;transition:transform .14s}
+.lamp::after{content:'';position:absolute;inset:9%;border-radius:50%;background:linear-gradient(140deg,#fff3,transparent 48%);pointer-events:none}
+.lamp.is-lit{transform:scale(1.03);color:#111}
+.lamp.is-red{background:radial-gradient(circle at 36% 26%,#ffb8b3,#f43127 46%,#880b06);box-shadow:inset 0 3px 8px #fff7,0 0 24px #f52828d8,0 3px 4px #111;color:#fff}
+.lamp.is-blue{background:radial-gradient(circle at 36% 26%,#b8f3ff,#15a8df 46%,#064978);box-shadow:inset 0 3px 8px #fff7,0 0 24px #17aeecd8,0 3px 4px #111;color:#fff}
+.lamp.is-yellow{background:radial-gradient(circle at 36% 26%,#fffef0,#ffd829 46%,#b87f00);box-shadow:inset 0 3px 8px #fff9,0 0 24px #ffe600d8,0 3px 4px #111;color:#111}
+.lamp.is-green{background:radial-gradient(circle at 36% 26%,#c6ffdc,#1cc45d 46%,#07612a);box-shadow:inset 0 3px 8px #fff7,0 0 24px #14c758d8,0 3px 4px #111;color:#fff}
+.lamp.is-white{background:radial-gradient(circle at 36% 26%,#fff,#ebede8 48%,#9ea39f);box-shadow:inset 0 3px 8px #fff,0 0 24px #ffffffd8,0 3px 4px #111;color:#111}
+.pedal-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,2.4vw,22px);align-items:center;justify-items:center;max-width:640px;margin:16px auto 0}
+.pedal-indicator{width:100%;max-width:92px;height:clamp(42px,5vw,58px);border-radius:9px;background:linear-gradient(180deg,#17191c,#070809);border:3px solid #101215;box-shadow:inset 0 4px 8px #000;display:grid;place-items:center;font-weight:900;font-size:20px;color:#464e54}
+.pedal-indicator.is-lit{background:linear-gradient(180deg,#fff9cc,#e0c55a 58%,#7d6b24);box-shadow:inset 0 2px 6px #fffb,0 0 22px #f5d456d8;color:#181a1b}
+.speaker-box{grid-column:2 / span 2;width:100%;min-height:48px;background:#0d1116;border:2px solid #26313d;border-radius:12px;padding:6px 10px;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:13px;font-weight:700;color:#9ec5db}
+.display-meta{min-height:32px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;padding-top:10px;border-top:1px solid #555c6380;color:#e5e8ec;font-size:13px}
+.console{position:relative;margin-top:14px;background:linear-gradient(164deg,#fafaf5,#e6e8e3 54%,#cfd3d0);border:2px solid #b8bdbb;border-radius:32px;padding:clamp(18px,3.5vw,32px) clamp(14px,3.5vw,32px);box-shadow:inset 0 4px 6px #fff,inset 0 -10px 18px #969c9a70,0 16px 32px #0009;color:#1e262b}
+.console-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;font-weight:800;letter-spacing:2px;color:#556064}
+.control-layout{display:grid;grid-template-columns:1.1fr 1fr 1fr 1.1fr;gap:clamp(8px,2.2vw,18px);align-items:center;justify-items:center;max-width:640px;margin:auto}
+.control{border:0;position:relative;transition:transform .08s;user-select:none}
+.control:active{transform:translateY(3px) scale(.96)!important}
+.colored{height:clamp(54px,7.8vw,78px);width:clamp(54px,7.8vw,78px);border-radius:50%;font-size:clamp(11px,1.6vw,13px);font-weight:800;border:3px solid #ffffff85;box-shadow:inset -5px -7px 12px #0003,inset 3px 5px 9px #fff9,0 6px 0 #7b807f,0 10px 12px #0004;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.colored small,.tone small,.pedal small{font-size:9px;opacity:.8;font-weight:700;margin-top:2px}
+.blue{grid-column:1;grid-row:1;background:#07a8e3;color:#00293d}
+.white{grid-column:2;grid-row:1;background:#fcfcfc;color:#262626}
+.yellow{grid-column:3;grid-row:1;background:#ffe152;color:#4d3900}
+.repeat-slot{grid-column:4;grid-row:1}
+.red{grid-column:2;grid-row:2;background:#f23d3d;color:#fff}
+.green{grid-column:3;grid-row:2;background:#1ab25e;color:#052915}
+.tone{width:min(100%,146px);min-height:50px;border-radius:10px;background:linear-gradient(#eaeded,#7d8285);color:#181d22;border:2px solid #8c9396;box-shadow:0 5px 0 #3f4448,0 8px 12px #0004;font-weight:800;font-size:clamp(11px,1.6vw,13px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px}
+.tone.high{grid-column:2;grid-row:3}
+.tone.low{grid-column:3;grid-row:3;background:linear-gradient(#525659,#17191b);color:#fff;border-color:#4d5256;box-shadow:0 5px 0 #0a0a0a,0 8px 12px #0004}
+.pedal{width:min(100%,142px);height:clamp(68px,8.5vw,94px);background:linear-gradient(160deg,#f0f2f0,#9fa3a2);clip-path:polygon(18% 4%,82% 4%,100% 100%,0 100%);color:#ffea14;font-size:clamp(26px,4.5vw,36px);font-weight:900;text-shadow:0 2px 3px #000a;filter:drop-shadow(0 6px 4px #0005);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pedal small{color:#111;text-shadow:none}
+.pedal.left{grid-column:1;grid-row:2 / span 2;align-self:end}
+.pedal.right{grid-column:4;grid-row:2 / span 2;align-self:end;background:linear-gradient(150deg,#858a8d,#32373c)}
+.pedal.right small{color:#eee}
+.control.selected{outline:4px solid #0284c7;outline-offset:4px}
+.controls-note{font-size:12px;color:#4e565a;text-align:center;margin:14px 0 0;font-weight:600}
+.panel{border:1px solid #2b3947;border-radius:20px;background:#162029;color:#e8f2f4;padding:18px;box-shadow:0 12px 24px #0006}
+.panel h2{font-size:16px;margin:0 0 12px;color:#fff}
+.panel-section{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #243240}
+.panel-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.label-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;margin-bottom:8px}
+.btn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.opt-btn{background:#21303d;color:#d8e6ec;border:1px solid #34495a;border-radius:9px;padding:9px 6px;font-size:12px;font-weight:700}
+.opt-btn:hover{background:#2b3f50}
+.opt-btn.active{background:#10b981;color:#06281e;border-color:#34d399}
+.start-btn{width:100%;background:#10b981;color:#042419;border:0;border-radius:12px;padding:14px;font-size:15px;font-weight:800;margin-top:8px}
+.start-btn:hover{background:#34d399}
+.sound-test-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.sound-btn{background:#1d2d3a;border:1px solid #385369;color:#bae6fd;border-radius:10px;padding:10px;font-size:12px;font-weight:700;text-align:left}
+.sound-btn.bear{color:#fde68a}
+.result-box{background:#172a36;border:1px solid #38617a;border-radius:16px;padding:16px;margin-top:14px;text-align:center}
+.hidden{display:none!important}
+@media(max-width:560px){body{padding:8px}.btn-grid{grid-template-columns:repeat(4,1fr)}.colored{width:54px;height:54px}}
+</style>
 </head>
 <body>
-<div class="parallax-container">
-  <div class="parallax-layer background"></div>
-  <div class="parallax-layer middleground"></div>
-  <div class="parallax-layer foreground">
-    <!-- Zona de sus - Afișare semnal -->
-    <div class="anzeigebereich">
-      <div id="signal1" class="signal-circle"></div>
-      <div id="signal2" class="signal-circle"></div>
+<main class="shell">
+  <header class="heading">
+    <div>
+      <h1>MEHRFACH-REAKTIONSTEST · REAKTIONSKONSOLE</h1>
+      <div class="subtitle">8 Lampen · 2 Pedalanzeigen · Verbesserter Bären- und Vogelton (Handy & PC)</div>
     </div>
-
-    <!-- Zona de notificare -->
-    <div id="tonBenachrichtigung" style="text-align: center; margin-bottom: 10px; font-weight: bold;"></div>
-
-    <!-- Zona de sus - Culori -->
-    <div class="anzeigebereich">
-      <div class="button-container top-button">
-        <button class="color-button blue" data-type="color" data-value="blue">Albastru</button>
-      </div>
-      <div class="button-container top-button">
-        <button class="color-button white" data-type="color" data-value="white">Alb</button>
-      </div>
-      <div class="button-container top-button">
-        <button class="color-button yellow" data-type="color" data-value="yellow">Galben</button>
-      </div>
+    <div class="top-actions">
+      <button type="button" class="badge-btn" id="quickBirdBtn">♪ Vogelton ↑</button>
+      <button type="button" class="badge-btn" id="quickBearBtn">♪ Bärenton ↓</button>
+      <button type="button" class="badge-btn" id="muteBtn">Ton: Ein</button>
     </div>
+  </header>
 
-    <!-- Butoane de mijloc (Ton înalt și Ton jos) -->
-    <div class="middle-buttons">
-      <div class="button-container">
-        <button class="tone-button tone-high" data-type="tone" data-value="high">Ton Înalt</button>
-      </div>
-      <div class="button-container">
-        <button class="tone-button tone-low" data-type="tone" data-value="low">Ton Scăzut</button>
-      </div>
+  <div class="telemetry">
+    <div>
+      <span id="roundLabel">Bereit zum Start</span> ·
+      <span>Treffer: <strong id="scoreLabel">0 / 0</strong></span> ·
+      <span>Serie: <strong id="streakLabel">0</strong></span> ·
+      <span>Ø Zeit: <strong id="avgTimeLabel">—</strong></span>
     </div>
+    <div id="lastFeedback">Tipp: Tasten 1–5, A/D und Pfeiltasten ↑/↓ funktionieren auch!</div>
+  </div>
 
-    <!-- Zona de jos - Pedale și culori -->
-    <div class="interaktionsbereich">
-      <div class="button-container">
-        <button class="pedal-button pedal-left" data-type="pedal" data-value="left" data-pedal="left"></button>
-      </div>
-
-      <div class="button-container">
-        <button class="color-button red" data-type="color" data-value="red">Roșu</button>
-      </div>
-
-      <div class="button-container">
-        <button class="color-button green" data-type="color" data-value="green">Verde</button>
-      </div>
-
-      <div class="button-container">
-        <button class="pedal-button pedal-right" data-type="pedal" data-value="right" data-pedal="right"></button>
-      </div>
-    </div>
-
-    </div>
-</div>
-  <!-- Selectare runde -->
-    <div class="runden-auswahl">
-      <h3>Alegeți numărul de runde:</h3>
-      <button onclick="setRounds(10)">10 Runde</button>
-      <button onclick="setRounds(20)">20 Runde</button>
-      <button onclick="setRounds(30)">30 Runde</button>
-    </div>
-    
-     <!-- Buton de repornire a jocului -->
-    <div class="spiel-neustart">
-      <button onclick="initializeGame()">Repornire</button>
-    </div>
-
-  <script>
-    // ===== JavaScript =====
-    const colors = ["red", "blue", "green", "yellow", "white"];
-    const tones = ["high", "low"];
-    const pedals = ["left", "right"];
-    const signalTypes = ["color-pedal", "tone-color", "color-color", "tone-pedal"];
-    let currentSignals = [];
-    let userChoices = [];
-    let isWaitingForSecondInput = false;
-
-    const toneHighAudio = new Audio('tONHOCH.mp3');
-    const toneLowAudio = new Audio('TONTIEF.mp3');
-
-    toneHighAudio.addEventListener('canplaythrough', () => console.log('Ton înalt încărcat.'));
-    toneLowAudio.addEventListener('canplaythrough', () => console.log('Ton scăzut încărcat.'));
-    toneHighAudio.addEventListener('error', () => console.error('Eroare la încărcarea tONHOCH.mp3'));
-    toneLowAudio.addEventListener('error', () => console.error('Eroare la încărcarea TONTIEF.mp3'));
-
-    let totalRounds = 0;
-    let currentRound = 0;
-    let correctAnswers = 0;
-
-    // Inițializare joc
-    function initializeGame() {
-      document.querySelector('.runden-auswahl').style.display = 'block';
-      currentRound = 0;
-      correctAnswers = 0;
-      userChoices = [];
-      isWaitingForSecondInput = false;
-      document.querySelector('.spiel-neustart')?.remove();
-    }
-
-    // Selectarea numărului de runde
-    function setRounds(rounds) {
-      totalRounds = rounds;
-      document.querySelector('.runden-auswahl').style.display = 'none';
-      nextRound();
-    }
-
-    // Începerea rundei de joc
-    function nextRound() {
-      if (currentRound < totalRounds) {
-        currentSignals = generateRandomSignals();
-        displaySignals(currentSignals);
-        userChoices = [];
-        isWaitingForSecondInput = false;
-        currentRound++;
-      } else {
-        endGame();
-      }
-    }
-
-    // Verificarea alegerii utilizatorului
-    function checkUserChoice() {
-      if (userChoices.length < 2) {
-        return;
-      }
-
-      let isCorrect = false;
-      const choice1 = userChoices[0];
-      const choice2 = userChoices[1];
-      const signal1 = currentSignals[0];
-      const signal2 = currentSignals[1];
-
-      const match1 = choice1.type === signal1.type && choice1.value === signal1.value;
-      const match2 = choice2.type === signal2.type && choice2.value === signal2.value;
-
-      const match3 = choice1.type === signal2.type && choice1.value === signal2.value;
-      const match4 = choice2.type === signal1.type && choice2.value === signal1.value;
-
-      if ((match1 && match2) || (match3 && match4)) {
-        isCorrect = true;
-        correctAnswers++;
-      }
-
-      userChoices = [];
-      isWaitingForSecondInput = false;
-      nextRound();
-    }
-
-    // Terminarea jocului și afișarea rezultatului
-    function endGame() {
-      const successRate = (correctAnswers / totalRounds) * 100;
-      if (successRate >= 60) {
-        alert(`Felicitări! Ai promovat cu ${successRate.toFixed(2)}%! 🎉`);
-      } else {
-        alert(`Din păcate, nu ai promovat. Rata ta de succes: ${successRate.toFixed(2)}%. Încearcă din nou! 😔`);
-      }
-
-      document.body.insertAdjacentHTML('beforeend', `
-        <div class="spiel-neustart">
-          <button onclick="initializeGame()">Repornire</button>
+  <div class="grid-main">
+    <div>
+      <section class="display" aria-label="Signalfeld">
+        <div class="display-header">
+          <span>SIGNALFELD · 8 LAMPEN + 2 PEDALE</span>
+          <button type="button" class="badge-btn" id="toggleToneHintBtn" style="padding:4px 8px;font-size:11px">Ton-Text: Sichtbar</button>
         </div>
-      `);
+        <div class="timer-bar-wrap hidden" id="timerWrap"><div class="timer-bar" id="timerBar"></div></div>
+        <div class="lamps" id="lamps"></div>
+        <div class="pedal-row">
+          <div class="pedal-indicator" id="pedalLeft">L</div>
+          <div class="speaker-box" id="notification">Warten auf Start</div>
+          <div class="pedal-indicator" id="pedalRight">R</div>
+        </div>
+        <div class="display-meta">
+          <span id="choiceProgress">Auswahl: 0 / 2</span>
+          <span id="modeSummary">2 Signale · 30 Runden</span>
+        </div>
+      </section>
+
+      <section class="console" id="console">
+        <div class="console-top">
+          <span id="consoleHeading">BEDIENFELD · ANTWORTEN WÄHLEN</span>
+          <button type="button" id="undoBtn" class="badge-btn hidden" style="padding:4px 8px;font-size:11px">Auswahl löschen</button>
+        </div>
+        <div class="control-layout">
+          <button type="button" class="control colored blue" data-type="color" data-value="blue"><span>Blau</span><small>[1 / B]</small></button>
+          <button type="button" class="control colored white" data-type="color" data-value="white"><span>Weiß</span><small>[2 / W]</small></button>
+          <button type="button" class="control colored yellow" data-type="color" data-value="yellow"><span>Gelb</span><small>[3 / G]</small></button>
+          <button type="button" class="badge-btn repeat-slot" id="repeatToneBtn" title="Ton wiederholen (Leertaste)">↻ Ton</button>
+          <button type="button" class="control colored red" data-type="color" data-value="red"><span>Rot</span><small>[4 / R]</small></button>
+          <button type="button" class="control colored green" data-type="color" data-value="green"><span>Grün</span><small>[5 / V]</small></button>
+          <button type="button" class="control pedal left" data-type="pedal" data-value="left"><span>L</span><small>[A / ←]</small></button>
+          <button type="button" class="control pedal right" data-type="pedal" data-value="right"><span>R</span><small>[D / →]</small></button>
+          <button type="button" class="control tone high" data-type="tone" data-value="high"><span>Hoher Ton ↑</span><small>Vogel [↑/H]</small></button>
+          <button type="button" class="control tone low" data-type="tone" data-value="low"><span>Tiefer Ton ↓</span><small>Bär [↓/T]</small></button>
+        </div>
+        <p class="controls-note" id="choiceHint">Drücke die Tasten, die den Signalen entsprechen (nochmal tippen hebt Auswahl auf).</p>
+      </section>
+    </div>
+
+    <aside class="panel">
+      <div class="panel-section">
+        <div class="label-row">
+          <span>1. Rundenzahl wählen</span>
+          <span id="selectedRoundsText" style="color:#34d399">30 Runden</span>
+        </div>
+        <div class="btn-grid" id="roundButtons">
+          <button type="button" class="opt-btn" data-rounds="10">10</button>
+          <button type="button" class="opt-btn" data-rounds="20">20</button>
+          <button type="button" class="opt-btn active" data-rounds="30">30</button>
+          <button type="button" class="opt-btn" data-rounds="50">50</button>
+          <button type="button" class="opt-btn" data-rounds="75">75</button>
+          <button type="button" class="opt-btn" data-rounds="100">100</button>
+          <button type="button" class="opt-btn" data-rounds="150">150</button>
+          <button type="button" class="opt-btn" data-rounds="200">200</button>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:10px">
+          <input type="range" id="roundsSlider" min="5" max="300" step="5" value="30" style="flex:1">
+          <button type="button" class="opt-btn" id="endlessBtn">∞ Endlos</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="label-row"><span>2. Gleichzeitige Signale</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px" id="sigCountButtons">
+          <button type="button" class="opt-btn" data-sig="1">1 Signal</button>
+          <button type="button" class="opt-btn active" data-sig="2">2 Signale</button>
+          <button type="button" class="opt-btn" data-sig="3">3 Signale</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="label-row"><span>3. Zeitlimit pro Runde</span></div>
+        <div class="btn-grid" id="timeButtons">
+          <button type="button" class="opt-btn active" data-time="0">Kein Limit</button>
+          <button type="button" class="opt-btn" data-time="3500">3,5 Sek.</button>
+          <button type="button" class="opt-btn" data-time="2200">2,2 Sek.</button>
+          <button type="button" class="opt-btn" data-time="1500">1,5 Sek.</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="label-row">
+          <span>4. Verbesserte Töne & Lautstärke</span>
+          <span id="volLabel">85%</span>
+        </div>
+        <input type="range" id="volSlider" min="5" max="100" step="5" value="85" style="width:100%">
+        <div class="sound-test-grid">
+          <button type="button" class="sound-btn" id="testHighBtn">♪ Hoher Ton (Vogel ↑)<br><small>Dreifaches Zwitschern</small></button>
+          <button type="button" class="sound-btn bear" id="testLowBtn">♪ Tiefer Ton (Bär ↓)<br><small>Kräftiges Bass-Brummen</small></button>
+        </div>
+      </div>
+
+      <button type="button" class="start-btn" id="startBtn">▶ Test jetzt starten (30 Runden)</button>
+      <div class="result-box hidden" id="resultBox"></div>
+    </aside>
+  </div>
+</main>
+<script>
+'use strict';
+const COLORS=['red','blue','green','yellow','white'];
+const COLOR_DE={blue:'Blau',white:'Weiß',yellow:'Gelb',red:'Rot',green:'Grün'};
+const TONES=['high','low'];
+const PEDALS=['left','right'];
+const lampsContainer=document.getElementById('lamps');
+const controls=Array.from(document.querySelectorAll('.control'));
+
+let totalRounds=30,isEndless=false,signalsPerRound=2,timeLimitMs=0;
+let currentRound=0,correctAnswers=0,streak=0,totalTimeMs=0;
+let currentSignals=[],userChoices=[],playing=false,waiting=false;
+let showToneText=true,muted=false,volume=0.85,audioCtx=null,roundStart=0,timerId=null;
+
+for(let i=0;i<8;i++){
+  const el=document.createElement('div');
+  el.className='lamp';
+  el.textContent=String(i+1);
+  lampsContainer.appendChild(el);
+}
+
+const rand=a=>a[Math.floor(Math.random()*a.length)];
+
+function getAudio(){
+  const C=window.AudioContext||window.webkitAudioContext;
+  if(!C)return null;
+  if(!audioCtx)audioCtx=new C();
+  if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});
+  return audioCtx;
+}
+
+function speakTone(value){
+  if(muted||volume<=0.01)return;
+  try{
+    const ctx=getAudio();if(!ctx)return;
+    const now=ctx.currentTime;
+    const master=ctx.createGain();
+    master.gain.setValueAtTime(volume,now);
+    master.connect(ctx.destination);
+
+    if(value==='low'){
+      // Kräftiger Bärenton mit Oberwellen (auch auf Handy-Lautsprechern klar hörbar)
+      const dur=0.68;
+      const filter=ctx.createBiquadFilter();
+      filter.type='lowpass';
+      filter.frequency.setValueAtTime(420,now);
+      filter.frequency.exponentialRampToValueAtTime(210,now+dur);
+      filter.Q.setValueAtTime(3.2,now);
+      filter.connect(master);
+
+      const o1=ctx.createOscillator(),g1=ctx.createGain();
+      o1.type='sawtooth';o1.frequency.setValueAtTime(138,now);o1.frequency.exponentialRampToValueAtTime(84,now+dur);
+      const o2=ctx.createOscillator(),g2=ctx.createGain();
+      o2.type='triangle';o2.frequency.setValueAtTime(206,now);o2.frequency.exponentialRampToValueAtTime(126,now+dur);
+      const o3=ctx.createOscillator(),g3=ctx.createGain();
+      o3.type='sine';o3.frequency.setValueAtTime(69,now);o3.frequency.exponentialRampToValueAtTime(46,now+dur);
+
+      const lfo=ctx.createOscillator(),lfoG=ctx.createGain();
+      lfo.frequency.setValueAtTime(24,now);lfoG.gain.setValueAtTime(9,now);
+      lfo.connect(lfoG);lfoG.connect(o1.frequency);lfoG.connect(o2.frequency);
+
+      g1.gain.setValueAtTime(.001,now);g1.gain.linearRampToValueAtTime(.28,now+.05);g1.gain.exponentialRampToValueAtTime(.001,now+dur);
+      g2.gain.setValueAtTime(.001,now);g2.gain.linearRampToValueAtTime(.24,now+.06);g2.gain.exponentialRampToValueAtTime(.001,now+dur);
+      g3.gain.setValueAtTime(.001,now);g3.gain.linearRampToValueAtTime(.35,now+.04);g3.gain.exponentialRampToValueAtTime(.001,now+dur);
+
+      o1.connect(g1);o2.connect(g2);o3.connect(g3);
+      g1.connect(filter);g2.connect(filter);g3.connect(master);
+      o1.start(now);o2.start(now);o3.start(now);lfo.start(now);
+      o1.stop(now+dur+.03);o2.stop(now+dur+.03);o3.stop(now+dur+.03);lfo.stop(now+dur+.03);
+    }else{
+      // Melodischer 3-Silben Vogelton
+      const chirp=(off,dur,f1,f2,f3,v)=>{
+        const t=now+off,o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';
+        o.frequency.setValueAtTime(f1,t);
+        o.frequency.exponentialRampToValueAtTime(f2,t+dur*.65);
+        o.frequency.exponentialRampToValueAtTime(f3,t+dur);
+        g.gain.setValueAtTime(.001,t);
+        g.gain.linearRampToValueAtTime(v,t+.018);
+        g.gain.exponentialRampToValueAtTime(.001,t+dur);
+        o.connect(g);g.connect(master);
+        o.start(t);o.stop(t+dur+.02);
+      };
+      chirp(0,.13,1420,2120,1880,.26);
+      chirp(.15,.13,1680,2480,2150,.28);
+      chirp(.31,.21,1850,2820,2380,.25);
     }
+  }catch(e){}
+}
 
-    // Generarea semnalelor aleatorii
-    function getRandom(array) {
-      return array[Math.floor(Math.random() * array.length)];
+function buildSignals(){
+  let raw=[];
+  if(signalsPerRound===1){
+    const t=rand(['color','color','tone','pedal']);
+    raw=[{type:t,value:rand(t==='color'?COLORS:t==='tone'?TONES:PEDALS)}];
+  }else if(signalsPerRound===2){
+    const c=rand(['color-pedal','tone-color','color-color','tone-pedal']);
+    if(c==='color-pedal')raw=[{type:'color',value:rand(COLORS)},{type:'pedal',value:rand(PEDALS)}];
+    else if(c==='tone-color')raw=[{type:'tone',value:rand(TONES)},{type:'color',value:rand(COLORS)}];
+    else if(c==='color-color'){const f=rand(COLORS);raw=[{type:'color',value:f},{type:'color',value:rand(COLORS.filter(x=>x!==f))}];}
+    else raw=[{type:'tone',value:rand(TONES)},{type:'pedal',value:rand(PEDALS)}];
+  }else{
+    raw=[{type:'color',value:rand(COLORS)},{type:'tone',value:rand(TONES)},{type:'pedal',value:rand(PEDALS)}];
+  }
+  const used=[];
+  return raw.map(s=>{
+    if(s.type==='color'){
+      const pool=[0,1,2,3,4,5,6,7].filter(i=>!used.includes(i));
+      const slot=rand(pool);used.push(slot);
+      return {...s,lampIndex:slot};
     }
+    return s;
+  });
+}
 
-    function generateRandomSignals() {
-      const randomType = getRandom(signalTypes);
-      let signal1, signal2;
+function renderSignals(){
+  Array.from(lampsContainer.children).forEach((el,i)=>{
+    el.className='lamp';el.textContent=String(i+1);
+  });
+  document.getElementById('pedalLeft').className='pedal-indicator';
+  document.getElementById('pedalRight').className='pedal-indicator';
 
-      switch (randomType) {
-        case "color-pedal":
-          signal1 = { type: "color", value: getRandom(colors) };
-          signal2 = { type: "pedal", value: getRandom(pedals) };
-          break;
-        case "tone-color":
-          signal1 = { type: "tone", value: getRandom(tones) };
-          signal2 = { type: "color", value: getRandom(colors) };
-          break;
-        case "color-color":
-          signal1 = { type: "color", value: getRandom(colors) };
-          signal2 = { type: "color", value: getRandom(colors.filter(c => c !== signal1.value)) };
-          break;
-        case "tone-pedal":
-          signal1 = { type: "tone", value: getRandom(tones) };
-          signal2 = { type: "pedal", value: getRandom(pedals) };
-          break;
+  currentSignals.forEach(s=>{
+    if(s.type==='color'){
+      const el=lampsContainer.children[s.lampIndex];
+      el.classList.add('is-lit','is-'+s.value);
+    }else if(s.type==='pedal'){
+      document.getElementById(s.value==='left'?'pedalLeft':'pedalRight').classList.add('is-lit');
+    }
+  });
+  const tone=currentSignals.find(s=>s.type==='tone');
+  document.getElementById('notification').textContent=tone
+    ?(showToneText?(tone.value==='high'?'Hoher Ton · Vogel ↑':'Tiefer Ton · Bär ↓'):'♪ Tonsignal aktiv (Gehör)')
+    :'Optische Signale ('+signalsPerRound+')';
+  if(tone)speakTone(tone.value);
+}
+
+function updateStatsUI(){
+  const pct=currentRound>1?Math.round((correctAnswers/(currentRound-1))*100):0;
+  document.getElementById('scoreLabel').textContent=correctAnswers+' / '+Math.max(0,currentRound-1)+(currentRound>1?' ('+pct+'%)':'');
+  document.getElementById('streakLabel').textContent=String(streak);
+  document.getElementById('avgTimeLabel').textContent=currentRound>1?Math.round(totalTimeMs/(currentRound-1))+' ms':'—';
+}
+
+function nextRound(){
+  if(timerId){clearInterval(timerId);timerId=null;}
+  if(!isEndless&&currentRound>=totalRounds){endGame();return;}
+  currentRound++;
+  currentSignals=buildSignals();
+  userChoices=[];
+  waiting=false;
+  roundStart=performance.now();
+  controls.forEach(b=>b.classList.remove('selected'));
+  document.getElementById('undoBtn').classList.add('hidden');
+  document.getElementById('roundLabel').textContent=isEndless?'Endlos · Runde '+currentRound:'Runde '+currentRound+' von '+totalRounds;
+  document.getElementById('choiceProgress').textContent='Auswahl: 0 / '+signalsPerRound;
+  updateStatsUI();
+  renderSignals();
+
+  if(timeLimitMs>0){
+    const wrap=document.getElementById('timerWrap'),bar=document.getElementById('timerBar');
+    wrap.classList.remove('hidden');
+    timerId=setInterval(()=>{
+      const left=Math.max(0,timeLimitMs-(performance.now()-roundStart));
+      bar.style.width=(left/timeLimitMs*100)+'%';
+      if(left<=0){
+        clearInterval(timerId);timerId=null;
+        waiting=true;streak=0;totalTimeMs+=timeLimitMs;
+        document.getElementById('lastFeedback').textContent='⏱ Zeit abgelaufen!';
+        setTimeout(nextRound,550);
       }
+    },50);
+  }else{
+    document.getElementById('timerWrap').classList.add('hidden');
+  }
+}
 
-      return [signal1, signal2];
+function begin(){
+  playing=true;currentRound=0;correctAnswers=0;streak=0;totalTimeMs=0;
+  document.getElementById('resultBox').classList.add('hidden');
+  document.getElementById('startBtn').textContent='↻ Neu starten';
+  nextRound();
+}
+
+function choose(btn){
+  const type=btn.dataset.type,value=btn.dataset.value;
+  if(!playing){if(type==='tone')speakTone(value);return;}
+  if(waiting)return;
+
+  const existIdx=userChoices.findIndex(c=>c.type===type&&c.value===value);
+  if(existIdx!==-1){
+    userChoices.splice(existIdx,1);
+    btn.classList.remove('selected');
+    document.getElementById('choiceProgress').textContent='Auswahl: '+userChoices.length+' / '+signalsPerRound;
+    if(!userChoices.length)document.getElementById('undoBtn').classList.add('hidden');
+    return;
+  }
+
+  userChoices.push({type,value});
+  btn.classList.add('selected');
+  if(type==='tone')speakTone(value);
+  document.getElementById('undoBtn').classList.remove('hidden');
+  document.getElementById('choiceProgress').textContent='Auswahl: '+userChoices.length+' / '+signalsPerRound;
+
+  if(userChoices.length===signalsPerRound){
+    waiting=true;
+    if(timerId){clearInterval(timerId);timerId=null;}
+    const ms=Math.max(80,Math.round(performance.now()-roundStart));
+    totalTimeMs+=ms;
+    const rem=[...currentSignals];
+    let ok=true;
+    for(const c of userChoices){
+      const idx=rem.findIndex(e=>e.type===c.type&&e.value===c.value);
+      if(idx!==-1)rem.splice(idx,1);else{ok=false;break;}
     }
-
-    // Funcție pentru evidențierea unui semnal
-    function highlightSignal(signalElement) {
-      signalElement.classList.add("active");
-      setTimeout(() => {
-        signalElement.classList.remove("active");
-      }, 500);
+    if(ok&&rem.length===0){
+      correctAnswers++;streak++;
+      document.getElementById('lastFeedback').textContent='✓ Richtig! ('+ms+' ms)';
+    }else{
+      streak=0;
+      document.getElementById('lastFeedback').textContent='✗ Fehler ('+ms+' ms)';
     }
+    setTimeout(nextRound,340);
+  }
+}
 
-    function displaySignals(signals) {
-      const [s1, s2] = signals;
-      const signal1Element = document.getElementById("signal1");
-      const signal2Element = document.getElementById("signal2");
-      const tonBenachrichtigung = document.getElementById("tonBenachrichtigung");
-      tonBenachrichtigung.textContent = "";
+function endGame(){
+  playing=false;
+  const done=Math.max(1,currentRound);
+  const pct=(correctAnswers/done)*100;
+  const avg=Math.round(totalTimeMs/done);
+  updateStatsUI();
+  const box=document.getElementById('resultBox');
+  box.classList.remove('hidden');
+  box.innerHTML='<strong>'+(pct>=60?'Glückwunsch! Bestanden! 🎉':'Training fortsetzen')+'</strong><br>'+
+    'Richtige Antworten: '+correctAnswers+' von '+done+' ('+pct.toFixed(1)+'%) · Ø Zeit: '+avg+' ms';
+}
 
-      if (s1.type === "color") {
-        signal1Element.setAttribute("data-color", s1.value);
-        signal1Element.style.backgroundColor = s1.value;
-        signal1Element.style.backgroundImage = "none";
-        signal1Element.removeAttribute("data-pedal");
-        highlightSignal(signal1Element);
-      } else if (s1.type === "pedal") {
-        signal1Element.style.backgroundColor = "lightgray";
-        signal1Element.style.backgroundImage = "url('https://cdn.gamma.app/fhpleqvbjim2f32/eebcb72d2ad843148a5bbdddbbf96de2/original/Pedallen.png')";
-        signal1Element.textContent = "";
-        signal1Element.setAttribute("data-pedal", s1.value);
-        signal1Element.removeAttribute("data-color");
-        highlightSignal(signal1Element);
-      } else if (s1.type === "tone") {
-        tonBenachrichtigung.textContent = s1.value === "high" ? "Ton Înalt!" : "Ton Scăzut!";
-        signal1Element.textContent = s1.value === "high" ? "↑" : "↓";
-        signal1Element.style.backgroundColor = s1.value === "high" ? "#d3d3d3" : "black";
-        signal1Element.removeAttribute("data-pedal");
-        signal1Element.removeAttribute("data-color");
-        highlightSignal(signal1Element);
-      }
+controls.forEach(b=>b.addEventListener('click',()=>choose(b)));
+document.getElementById('startBtn').addEventListener('click',begin);
+document.getElementById('quickBirdBtn').addEventListener('click',()=>speakTone('high'));
+document.getElementById('quickBearBtn').addEventListener('click',()=>speakTone('low'));
+document.getElementById('testHighBtn').addEventListener('click',()=>speakTone('high'));
+document.getElementById('testLowBtn').addEventListener('click',()=>speakTone('low'));
+document.getElementById('repeatToneBtn').addEventListener('click',()=>{
+  const t=currentSignals.find(s=>s.type==='tone');
+  speakTone(t?t.value:'high');
+});
+document.getElementById('undoBtn').addEventListener('click',()=>{
+  userChoices=[];controls.forEach(b=>b.classList.remove('selected'));
+  document.getElementById('undoBtn').classList.add('hidden');
+  document.getElementById('choiceProgress').textContent='Auswahl: 0 / '+signalsPerRound;
+});
+document.getElementById('muteBtn').addEventListener('click',e=>{
+  muted=!muted;e.target.textContent=muted?'Ton: Aus':'Ton: Ein';
+});
+document.getElementById('toggleToneHintBtn').addEventListener('click',e=>{
+  showToneText=!showToneText;
+  e.target.textContent=showToneText?'Ton-Text: Sichtbar':'Nur Gehör';
+});
+document.getElementById('volSlider').addEventListener('input',e=>{
+  volume=Number(e.target.value)/100;
+  document.getElementById('volLabel').textContent=e.target.value+'%';
+});
 
-      if (s2.type === "color") {
-        signal2Element.setAttribute("data-color", s2.value);
-        signal2Element.style.backgroundColor = s2.value;
-        signal2Element.style.backgroundImage = "none";
-        signal2Element.removeAttribute("data-pedal");
-        highlightSignal(signal2Element);
-      } else if (s2.type === "pedal") {
-        signal2Element.style.backgroundColor = "lightgray";
-        signal2Element.style.backgroundImage = "url('https://cdn.gamma.app/fhpleqvbjim2f32/eebcb72d2ad843148a5bbdddbbf96de2/original/Pedallen.png')";
-        signal2Element.textContent = "";
-        signal2Element.setAttribute("data-pedal", s2.value);
-        signal2Element.removeAttribute("data-color");
-        highlightSignal(signal2Element);
-      } else if (s2.type === "tone") {
-        tonBenachrichtigung.textContent = s2.value === "high" ? "Ton Înalt!" : "Ton Scăzut!";
-        signal2Element.textContent = s2.value === "high" ? "↑" : "↓";
-        signal2Element.style.backgroundColor = s2.value === "high" ? "#d3d3d3" : "black";
-        signal2Element.removeAttribute("data-pedal");
-        signal2Element.removeAttribute("data-color");
-        highlightSignal(signal2Element);
-      }
-    }
+function updateSetupLabels(){
+  document.getElementById('selectedRoundsText').textContent=isEndless?'Endlos-Modus':totalRounds+' Runden';
+  document.getElementById('modeSummary').textContent=signalsPerRound+' Signale · '+(isEndless?'Endlos':totalRounds+' Runden');
+  document.getElementById('startBtn').textContent='▶ Test starten ('+(isEndless?'Endlos':totalRounds+' Runden')+')';
+}
 
-    // Event-Listener pentru butoane
-    document.querySelectorAll("button").forEach(button => {
-      button.addEventListener("click", () => {
-        if (userChoices.length < 2) {
-          userChoices.push({ type: button.dataset.type, value: button.dataset.value });
-
-          if (button.dataset.type === "tone") {
-            const audio = button.dataset.value === "high" ? toneHighAudio : toneLowAudio;
-            audio.currentTime = 0;
-            audio.play().catch(error => console.error('Eroare la redarea tonului:', error));
-          }
-
-          if (userChoices.length === 2) {
-            checkUserChoice();
-          }
-        }
-      });
-    });
-
-    // Parallax-Effekt mit Mausbewegung
-    const parallaxContainer = document.querySelector(".parallax-container");
-    const parallaxLayers = document.querySelectorAll(".parallax-layer");
-
-    document.addEventListener("mousemove", (e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-
-      parallaxLayers.forEach((layer, index) => {
-        const speed = (index + 1) * 0.1;
-        const xOffset = x * speed * 50;
-        const yOffset = y * speed * 30;
-
-        layer.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
-      });
-    });
-
-    // Inițializarea jocului la pornire
-    initializeGame();
-  </script>
+document.querySelectorAll('#roundButtons .opt-btn').forEach(b=>b.addEventListener('click',()=>{
+  isEndless=false;totalRounds=Number(b.dataset.rounds);
+  document.getElementById('roundsSlider').value=String(totalRounds);
+  document.querySelectorAll('#roundButtons .opt-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('endlessBtn').classList.remove('active');
+  b.classList.add('active');updateSetupLabels();begin();
+}));
+document.getElementById('roundsSlider').addEventListener('input',e=>{
+  isEndless=false;totalRounds=Number(e.target.value);
+  document.querySelectorAll('#roundButtons .opt-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('endlessBtn').classList.remove('active');
+  updateSetupLabels();
+});
+document.getElementById('endlessBtn').addEventListener('click',e=>{
+  isEndless=!isEndless;e.target.classList.toggle('active',isEndless);
+  updateSetupLabels();
+});
+document.querySelectorAll('#sigCountButtons .opt-btn').forEach(b=>b.addEventListener('click',()=>{
+  signalsPerRound=Number(b.dataset.sig);
+  document.querySelectorAll('#sigCountButtons .opt-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');updateSetupLabels();
+}));
+document.querySelectorAll('#timeButtons .opt-btn').forEach(b=>b.addEventListener('click',()=>{
+  timeLimitMs=Number(b.dataset.time);
+  document.querySelectorAll('#timeButtons .opt-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+}));
+window.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase();
+  const find=(t,v)=>controls.find(c=>c.dataset.type===t&&c.dataset.value===v);
+  if(k==='1'||k==='b')choose(find('color','blue'));
+  else if(k==='2'||k==='w')choose(find('color','white'));
+  else if(k==='3'||k==='g')choose(find('color','yellow'));
+  else if(k==='4'||k==='r')choose(find('color','red'));
+  else if(k==='5'||k==='v')choose(find('color','green'));
+  else if(k==='a'||e.key==='ArrowLeft')choose(find('pedal','left'));
+  else if(k==='d'||e.key==='ArrowRight')choose(find('pedal','right'));
+  else if(k==='h'||e.key==='ArrowUp')choose(find('tone','high'));
+  else if(k==='t'||e.key==='ArrowDown')choose(find('tone','low'));
+});
+</script>
 </body>
 </html>
